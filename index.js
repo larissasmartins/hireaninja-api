@@ -9,11 +9,17 @@ const app = express();
 mongoose.connect('mongodb://localhost/ninjas');
 mongoose.Promise = global.Promise;
 
-// 
+// middleware
 app.use(bodyParser.json());
 
-// initialize routes
+// (middleware) initialize routes
 app.use('/api', require('./routes/api'));
+
+// (middleware) error handling 
+app.use(function (error, resquest, response, next) {
+    // console.log(error);
+    response.status(422).send({ error: error.message });
+});
 
 // listen for requests
 app.listen(process.env.port || 3000, function () {
